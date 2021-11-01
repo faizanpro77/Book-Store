@@ -11,28 +11,24 @@ const BookCard = () => {
   const [booleanbuttomBag, setbooleanbuttomBag] = useState(false);
   useEffect(() => {
     getBookCardData();
-   
+    //  axiosdata.map(data=>{console.log('}}}}}}}}',data.auther)})
   }, []);
 
   const getBookCardData = async () => {
     let response = await axios.get(
       'https://restapimash-default-rtdb.firebaseio.com/Book.json?auth=WDGZGCxE2OHaeBe0iGqLsyuMSnZdxzHcWA6iWxvJ',
     );
-    // console.log('=====================',response.data),
-    setaxiosdata(response.data.bookCollection);
+    axiosdata.map(data =>
+      console.log('=====================', data.addbagboolean),
+    ),
+      setaxiosdata(response.data.bookCollection);
     // getdsddd()
   };
 
- 
-  // const getdsddd=()=>{
-  //   console.log('dhhhhhhhhhhh',axiosdata);
-  //   axiosdata.map(item=>console.log('=============',item))
-
-  // }
-
-  const handleUserDataPost = cardData => {
-    console.log('hhhhhhhhhh', cardData.title);
-    console.warn('hhhhhhhhhh', cardData.title);
+  const handleUserDataPost = (cardData, Index) => {
+    // console.log('hhhhhhhhhh', cardData.title);
+    //  console.warn('hhhhhhhhhh', cardData.title);
+    console.log('idddddddd9999d', Index);
 
     axios({
       method: 'post',
@@ -42,8 +38,21 @@ const BookCard = () => {
         auther: cardData.auther,
         price: cardData.price,
         bookImgUri: cardData.bookImgUri,
+        count: cardData.count,
+        initialPrice: cardData.initialPrice,
       },
     });
+
+    axios({
+      method: 'PATCH',
+      url: `https://restapimash-default-rtdb.firebaseio.com/Book/bookCollection/${Index}.json?auth=WDGZGCxE2OHaeBe0iGqLsyuMSnZdxzHcWA6iWxvJ`,
+      data: {
+        addbagboolean: true,
+      },
+    });
+    setTimeout(() => {
+      getBookCardData();
+    }, 100);
   };
 
   return (
@@ -54,10 +63,10 @@ const BookCard = () => {
         flexDirection: 'row',
         alignSelf: 'center',
       }}>
-      {axiosdata.map(dataItem => {
-        //console.log('idddddddd9999d', Index);
+      {axiosdata.map((dataItem, Index) => {
+        // console.log('idddddddd9999d', Index);
         return (
-          <View style={BookCardCss.container}>
+          <View key={Index} style={BookCardCss.container}>
             <View style={BookCardCss.CardContainer}>
               <View style={BookCardCss.imagContainer}>
                 <View style={BookCardCss.imageView}>
@@ -76,14 +85,14 @@ const BookCard = () => {
                 <Text style={BookCardCss.Richtxt2}>{dataItem.auther}</Text>
                 <Text style={BookCardCss.price}>{dataItem.price}</Text>
               </View>
-              {booleanbuttomBag ? (
+              {dataItem.addbagboolean ? (
                 <View style={BookCardCss.BagButton}>
                   <Text style={BookCardCss.Bagtxt}>ADDED TO BAG</Text>
                 </View>
               ) : (
                 <View style={BookCardCss.TwoButtonView}>
                   <TouchableOpacity
-                    onPress={() => handleUserDataPost(dataItem)}>
+                    onPress={() => handleUserDataPost(dataItem, Index)}>
                     <View style={BookCardCss.cardButton}>
                       <Text style={BookCardCss.CardButtontxt}>ADD TO BAG</Text>
                     </View>

@@ -6,7 +6,8 @@ const ShoppingCartCardCss = StyleSheet.create({
     width: '100%',
     borderWidth: 0.5,
     borderColor:'gray',
-    borderRadius:10
+    borderRadius:10,
+    marginTop:10
     //backgroundColor: 'red',
   },
   imgTxtContent: {
@@ -64,18 +65,18 @@ const ShoppingCartCardCss = StyleSheet.create({
     alignItems:'center'
     
   },
-  placeOrder:{
-    height:30,
-    width:120,
-    backgroundColor:'crimson',
-    marginRight:5,
-    borderRadius:10,
-    justifyContent:'center',
-    alignItems:'center'
+ 
+  
+  countView:{
+    height:20,
+    width:20,
+    borderWidth:1,
+    marginLeft:5,
+    justifyContent:"center",
+    alignItems:'center',
+    //marginBottom:10
   },
-  placeOrdertxt:{
-    color:'white'
-  }
+ 
 });
 
 export default ShoppingCartCardCss;

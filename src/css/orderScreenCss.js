@@ -67,6 +67,7 @@ const orderScreenCss = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 90,
   },
+ 
 });
 
 export default orderScreenCss;
