@@ -93,15 +93,13 @@ export default function ShoppingCartCard() {
     // console.log('responseonlyyyyyyyyyyyyyy',response);
     // let arr = Object.values(response.data);
     //    setaxiousData(response.data.CardItem);
-
+      if(response.data!=null){
     setarrayForDelete(Object.keys(response.data));
     setaxiousData(Object.values(response.data));
     setstatearr(Object.values(response.data));
+      }
     statearr.map(data => {
-      //var total1=0
-      //total1 = total1 + data.price
-      //setTotal(total => total + data.price);
-
+     
     });
   };
   //console.log('}}}}}}}}}}}}}}}}}}}', total);
