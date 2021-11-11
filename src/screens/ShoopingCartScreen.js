@@ -5,18 +5,35 @@ import HomeHeader from '../component/HomeHeader';
 import ShoopingCartCard from '../component/ShoopingCartCard';
 import ShoopingCartScreenCss from '../css/ShoopingCartScreenCss';
 import ShoppingCartCardCss from '../css/ShoppingCartCardCss';
+import {BadgeCountContext} from '../screens/HomeScreen';
+//import { BadgeCountContext } from  './ContextData'
+
 
 export default function ShoopingCartScreen({navigation}) {
+
   const [cardUserData, setcardUserData] = useState([]);
+  const[BadgeCountData,setBadgeCount] = useState(0)
+
+  const handleBadgeCount = (count)=>{
+      console.log('dddddddddddddddddddkkkkkkkk',count);
+      setBadgeCount(count)
+  }
+  useEffect(()=>{
+    console.log('ggggggggggggggggggggggggggggggggggggggg');
+
+  },[])
 
   return (
     <View style={ShoopingCartScreenCss.container}>
+      <BadgeCountContext.Provider value={BadgeCountData}>
       <HomeHeader />
+      </BadgeCountContext.Provider>
+
       
         <Text style={ShoopingCartScreenCss.myCarttxt}>MyCart</Text>
         <View style={ShoopingCartScreenCss.container1}>
         <ScrollView>
-          <ShoopingCartCard />
+          <ShoopingCartCard BadgeCount={handleBadgeCount} />
           </ScrollView>
         </View>
       

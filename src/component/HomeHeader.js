@@ -1,34 +1,47 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import HomeHeaderCss from '../css/HomeHeaderCss';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import IconEvilIcons from 'react-native-vector-icons/EvilIcons';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
-//import  Icon  from "react-native-vector-icons/icon";
 import {useNavigation} from '@react-navigation/native';
 import {Badge} from 'react-native-elements';
 import axios from 'axios';
+import {BadgeCountContext} from '../screens/HomeScreen';
+//import BadgeContext from '../screens/ContextData';
+//import {FirstName} from '../screens/HomeScreen';
+//import { BadgeCountContext } from  '../screens/ContextData'
+//import { BadgeCountContext } from  '../screens/ContextData'
 
 const HomeHeader = () => {
+  const badgeContext = useContext(BadgeCountContext)
+  console.log('ooooooooooooooo',badgeContext);
   const [badgeArr, setBadgeArray] = useState([]);
   const navigation = useNavigation();
+  //const {badgeLenth,setbadgeLenth} = useContext(BadgeContext)
 
-  useEffect( () => {
-    //getCardData();
+  //console.log('badgeLenthhhhhhhhhhhhhhhh',badgeLenth);
+  useEffect(() => {
+    getCardData();
   }, []);
-
 
   const getCardData = async () => {
     let ShoopingCartDataResponse = await axios.get(
       'https://restapimash-default-rtdb.firebaseio.com/users/CardItem.json?auth=WDGZGCxE2OHaeBe0iGqLsyuMSnZdxzHcWA6iWxvJ',
     );
-    setBadgeArray(ShoopingCartDataResponse.data);
-    let arrdata =[ShoopingCartDataResponse.data]
-    console.log('lengthhhhhhhhhhhhhhh888', arrdata.length);
+    if (ShoopingCartDataResponse.data != null) {
+      setBadgeArray(Object.keys(ShoopingCartDataResponse.data));
+    } else {
+      setBadgeArray([]);
+    }
   };
-  console.log('lengthhhhhhhhhhhhhhh', badgeArr.length);
   return (
     <View style={HomeHeaderCss.container1}>
+      {/* <BadgeCountContext.Consumer>
+        {badgecount => {
+         return console.log('iiiiiiiiiii', badgecount);
+        }}
+      </BadgeCountContext.Consumer> */}
       <View style={HomeHeaderCss.container2}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={HomeHeaderCss.bookicone}>
@@ -57,7 +70,8 @@ const HomeHeader = () => {
               color={'white'}
             />
             <Badge
-              value={3}
+            // badgeArr.length
+              value={badgeContext}
               status="success"
               containerStyle={{position: 'relative', top: -7, right: 14}}
             />

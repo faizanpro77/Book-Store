@@ -7,7 +7,7 @@ import axios from 'axios';
 // import { firebase } from '@react-native-firebase/database';
 // import auth from '@react-native-firebase/auth';
 
-export default function ShoppingCartCard() {
+export default function ShoppingCartCard(props) {
   const [axiousData, setaxiousData] = useState([]);
   const [arrayForDelete, setarrayForDelete] = useState([]);
   const [defaultImg, setdefaultImg] = useState(
@@ -16,13 +16,12 @@ export default function ShoppingCartCard() {
   const [count, setCount] = useState(1);
   const [IndexData, setIndexData] = useState(0);
   const [newCount, setnewCount] = useState(1);
-  const [price, setPrice] = useState(10);
+  const [price, setPrice] = useState(0);
   // const[initialPrice,setinitialPrice]=useState(0)
   const [first, setfirst] = useState(1);
   //const [priceBoolean, setpriceBoolean] = useState(true);
   const [total, setTotal] = useState(0);
   const [statearr, setstatearr] = useState([]);
-  
 
   console.log('*************************************');
   const increaseCount = (Index, newCount1, price, initialPrice) => {
@@ -76,52 +75,38 @@ export default function ShoppingCartCard() {
     //  getCardDataFromUserCollection();
     // console.log('88888888888888888',axiousData);
     // setCount(newCount)
-
   }, [newCount]);
 
-
   const getCardDataFromUserCollection = async () => {
-    
     let response = await axios.get(
       'https://restapimash-default-rtdb.firebaseio.com/users/CardItem.json?auth=WDGZGCxE2OHaeBe0iGqLsyuMSnZdxzHcWA6iWxvJ',
     );
-    //console.log('cardDataaaaaaaa', axiousData);
-    //console.log('responsesssssssssssssss', Object.values(response.data));
-    //console.log('Object.keysssssssss',Object.keys(response.data));
-    //console.log('Object.entrieeeeeeeeeeee',Object.entries(response.data));
 
-    // console.log('responseonlyyyyyyyyyyyyyy',response);
-    // let arr = Object.values(response.data);
-    //    setaxiousData(response.data.CardItem);
-      if(response.data!=null){
-    setarrayForDelete(Object.keys(response.data));
-    setaxiousData(Object.values(response.data));
-    setstatearr(Object.values(response.data));
-      }
-    statearr.map(data => {
-     
-    });
-  };
-  //console.log('}}}}}}}}}}}}}}}}}}}', total);
+   
+    
+    if (response.data != null) {
+      setarrayForDelete(Object.keys(response.data));
+      setaxiousData(Object.values(response.data));
+      setstatearr(Object.values(response.data));
+      let Badge = Object.values(response.data).length
+     // console.log('99999999999999999',Badge)
+      props.BadgeCount(Badge)
+      
+    }else{
+      props.BadgeCount([])
+      setaxiousData([])
+    }
+  }
 
   const RemoveData = Index => {
-    // let arr =Object.keys(response.data)
-    // console.log('aarrrrrrrrr', arrayForDelete[Index]);
-
+    
     let response = axios.delete(
       `https://restapimash-default-rtdb.firebaseio.com/users/CardItem/${arrayForDelete[Index]}.json?auth=WDGZGCxE2OHaeBe0iGqLsyuMSnZdxzHcWA6iWxvJ`,
-    );
-    getCardDataFromUserCollection();
+    )
 
-    // axios({
-    //   method: 'PATCH',
-    //   url: `https://restapimash-default-rtdb.firebaseio.com/Book/bookCollection/0.json?auth=WDGZGCxE2OHaeBe0iGqLsyuMSnZdxzHcWA6iWxvJ`,
-    //   data: {
-    //     addbagboolean: false,
-    //   },
-    // });
+    getCardDataFromUserCollection();
   };
-  //**************************************************************** */
+  //Fconsole.log('after removeeeeeeeeeeeeee',axiousData);
   const handleCount = async Index => {
     console.log('1111111111111111111111');
     let response = await axios({
@@ -136,14 +121,15 @@ export default function ShoppingCartCard() {
 
   return (
     <View>
-      {axiousData.map((dataItem, Index) => {
+      {axiousData?.length ?axiousData.map((dataItem, Index) => {
         // let total=0
         ///setTotal(total=>total+dataItem.price)
         // console.log('>>>>>>>>>>>>>>>>>>',total);
 
-        return (
+        return (          
           <View key={Index} style={ShoppingCartCardCss.container}>
-            <View style={ShoppingCartCardCss.imgTxtContent}>
+            <
+              View style={ShoppingCartCardCss.imgTxtContent}>
               <Image
                 style={ShoppingCartCardCss.cardImg}
                 source={{
@@ -185,7 +171,6 @@ export default function ShoppingCartCard() {
 
                 <View style={ShoppingCartCardCss.countView}>
                   <Text>{dataItem.count}</Text>
-                  {/* {console.log('countCheckkkkkkkkkkkkkksecond', countCheck)} */}
                 </View>
 
                 <View style={ShoppingCartCardCss.circleButton2}>
@@ -208,7 +193,7 @@ export default function ShoppingCartCard() {
             </View>
           </View>
         );
-      })}
+      }):null}
     </View>
   );
 }
