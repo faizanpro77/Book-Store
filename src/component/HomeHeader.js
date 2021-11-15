@@ -7,41 +7,15 @@ import IconAntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import {Badge} from 'react-native-elements';
 import axios from 'axios';
-import {BadgeCountContext} from '../screens/HomeScreen';
-//import BadgeContext from '../screens/ContextData';
-//import {FirstName} from '../screens/HomeScreen';
-//import { BadgeCountContext } from  '../screens/ContextData'
-//import { BadgeCountContext } from  '../screens/ContextData'
+import {BadgeContext} from '../../App';
 
 const HomeHeader = () => {
-  const badgeContext = useContext(BadgeCountContext)
-  console.log('ooooooooooooooo',badgeContext);
+  const {state:{badgeCount}} = useContext(BadgeContext);
   const [badgeArr, setBadgeArray] = useState([]);
   const navigation = useNavigation();
-  //const {badgeLenth,setbadgeLenth} = useContext(BadgeContext)
 
-  //console.log('badgeLenthhhhhhhhhhhhhhhh',badgeLenth);
-  useEffect(() => {
-    getCardData();
-  }, []);
-
-  const getCardData = async () => {
-    let ShoopingCartDataResponse = await axios.get(
-      'https://restapimash-default-rtdb.firebaseio.com/users/CardItem.json?auth=WDGZGCxE2OHaeBe0iGqLsyuMSnZdxzHcWA6iWxvJ',
-    );
-    if (ShoopingCartDataResponse.data != null) {
-      setBadgeArray(Object.keys(ShoopingCartDataResponse.data));
-    } else {
-      setBadgeArray([]);
-    }
-  };
   return (
     <View style={HomeHeaderCss.container1}>
-      {/* <BadgeCountContext.Consumer>
-        {badgecount => {
-         return console.log('iiiiiiiiiii', badgecount);
-        }}
-      </BadgeCountContext.Consumer> */}
       <View style={HomeHeaderCss.container2}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={HomeHeaderCss.bookicone}>
@@ -69,12 +43,14 @@ const HomeHeader = () => {
               size={20}
               color={'white'}
             />
-            <Badge
-            // badgeArr.length
-              value={badgeContext}
-              status="success"
-              containerStyle={{position: 'relative', top: -7, right: 14}}
-            />
+            {badgeCount > 0 ? (
+              <Badge
+                // badgeArr.length
+                value={badgeCount}
+                status="success"
+                containerStyle={{position: 'relative', top: -7, right: 14}}
+              />
+            ) : null}
           </View>
         </TouchableOpacity>
       </View>
