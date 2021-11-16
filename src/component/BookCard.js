@@ -10,6 +10,7 @@ const BookCard = props => {
   const [ShoopingCartArr, setShoopingCartArr] = useState([]);
   const [addBoolean, setaddBoolean] = useState(false);
   const navigation = useNavigation();
+  const [arrayId,setarrayId] = useState([])
 
   const [defultImangr, setdefultImangr] = useState(
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjpqrQgqFs5BR9_NGaRBoU8QG5jLpf0KJxYg&usqp=CAU',
@@ -56,6 +57,10 @@ const BookCard = props => {
     // for (var i = 0; i < ShoppingArr.length; i++) {
     //   console.log('}}}}}}}}}}}',ShoopingCartArr[i].title);
     //   if (ShoppingArr[i] != dataItemId) {
+      
+      setarrayId([...arrayId,dataItemId])
+
+
     for (var i = 0; i < ShoopingCartArr.length; i++) {
       if (ShoopingCartArr[i].id != dataItemId) {
         axios({
@@ -79,6 +84,7 @@ const BookCard = props => {
     }, 100);
   };
 
+ // console.log('arrayIdddddddddddddddddd',arrayId);
   return (
     <View
       style={{
