@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import react, {View, Image, Text, TouchableOpacity} from 'react-native';
+import react, {
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import BookCardCss from '../css/BookCardCss';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
@@ -10,7 +16,8 @@ const BookCard = props => {
   const [ShoopingCartArr, setShoopingCartArr] = useState([]);
   const [addBoolean, setaddBoolean] = useState(false);
   const navigation = useNavigation();
-  const [arrayId,setarrayId] = useState([])
+  const [arrayId, setarrayId] = useState([]);
+  const [isLoading, setLoading] = useState(false);
 
   const [defultImangr, setdefultImangr] = useState(
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjpqrQgqFs5BR9_NGaRBoU8QG5jLpf0KJxYg&usqp=CAU',
@@ -51,16 +58,8 @@ const BookCard = props => {
     }
   };
   const handleUserDataPost = (cardData, dataItemId) => {
-    // let ShoppingArr = []
-    // ShoppingArr[ShoppingArr.length]=dataItemId
-    // console.log('...................',ShoppingArr);
-    // for (var i = 0; i < ShoppingArr.length; i++) {
-    //   console.log('}}}}}}}}}}}',ShoopingCartArr[i].title);
-    //   if (ShoppingArr[i] != dataItemId) {
-      
-      setarrayId([...arrayId,dataItemId])
-
-
+    setarrayId([...arrayId, dataItemId]);
+    setLoading(true);
     for (var i = 0; i < ShoopingCartArr.length; i++) {
       if (ShoopingCartArr[i].id != dataItemId) {
         axios({
@@ -75,76 +74,97 @@ const BookCard = props => {
             initialPrice: cardData.initialPrice,
             id: cardData.id,
           },
-        });
+        })
+          .then(() => {
+            setLoading(false);
+          })
+          .catch(() => {
+            setLoading(false);
+          });
       }
     }
+    // setTimeout(() => {
+    //   setLoading(false);
+    // }, 150);
 
     setTimeout(() => {
       getBookCardData();
     }, 100);
   };
 
- // console.log('arrayIdddddddddddddddddd',arrayId);
+  // console.log('arrayIdddddddddddddddddd',arrayId);
   return (
-    <View
-      style={{
-        flex: 1,
-        flexWrap: 'wrap',
-        flexDirection: 'row',
-        alignSelf: 'center',
-      }}>
-      {axiosdata.map((dataItem, Index) => {
-        var addbagboolean = false;
-        for (var i = 0; i < ShoopingCartArr.length; i++) {
-          if (ShoopingCartArr[i].id === dataItem.id) {
-            addbagboolean = true;
-          }
-        }
+    <View>
+      {isLoading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            flexWrap: 'wrap',
+            flexDirection: 'row',
+            alignSelf: 'center',
+          }}>
+          {axiosdata.map((dataItem, Index) => {
+            var addbagboolean = false;
+            for (var i = 0; i < ShoopingCartArr.length; i++) {
+              if (ShoopingCartArr[i].id === dataItem.id) {
+                addbagboolean = true;
+              }
+            }
 
-        return (
-          <View key={Index} style={BookCardCss.container}>
-            <View style={BookCardCss.CardContainer}>
-              <View style={BookCardCss.imagContainer}>
-                <View style={BookCardCss.imageView}>
-                  <Image
-                    style={BookCardCss.imageView}
-                    source={{
-                      uri: dataItem.bookImgUri
-                        ? dataItem.bookImgUri
-                        : defultImangr,
-                    }}
-                  />
+            return (
+              <View key={Index} style={BookCardCss.container}>
+                <View style={BookCardCss.CardContainer}>
+                  <View style={BookCardCss.imagContainer}>
+                    <View style={BookCardCss.imageView}>
+                      <Image
+                        style={BookCardCss.imageView}
+                        source={{
+                          uri: dataItem.bookImgUri
+                            ? dataItem.bookImgUri
+                            : defultImangr,
+                        }}
+                      />
+                    </View>
+                  </View>
+                  <View style={BookCardCss.titletxtView}>
+                    <Text style={BookCardCss.Richtxt1}>{dataItem.title}</Text>
+                    <Text style={BookCardCss.Richtxt2}>{dataItem.auther}</Text>
+                    <Text style={BookCardCss.price}>{dataItem.price}</Text>
+                  </View>
+
+                  {addbagboolean ? (
+                    <View style={BookCardCss.BagButton}>
+                      <Text style={BookCardCss.Bagtxt}>ADDED TO BAG</Text>
+                    </View>
+                  ) : (
+                    <View style={BookCardCss.TwoButtonView}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          handleUserDataPost(dataItem, dataItem.id)
+                        }>
+                        <View style={BookCardCss.cardButton}>
+                          <Text style={BookCardCss.CardButtontxt}>
+                            ADD TO BAG
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity>
+                        <View style={BookCardCss.cardButton2}>
+                          <Text style={BookCardCss.CardButtontxt2}>
+                            WISHLIST
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
               </View>
-              <View style={BookCardCss.titletxtView}>
-                <Text style={BookCardCss.Richtxt1}>{dataItem.title}</Text>
-                <Text style={BookCardCss.Richtxt2}>{dataItem.auther}</Text>
-                <Text style={BookCardCss.price}>{dataItem.price}</Text>
-              </View>
-
-              {addbagboolean ? (
-                <View style={BookCardCss.BagButton}>
-                  <Text style={BookCardCss.Bagtxt}>ADDED TO BAG</Text>
-                </View>
-              ) : (
-                <View style={BookCardCss.TwoButtonView}>
-                  <TouchableOpacity
-                    onPress={() => handleUserDataPost(dataItem, dataItem.id)}>
-                    <View style={BookCardCss.cardButton}>
-                      <Text style={BookCardCss.CardButtontxt}>ADD TO BAG</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <View style={BookCardCss.cardButton2}>
-                      <Text style={BookCardCss.CardButtontxt2}>WISHLIST</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          </View>
-        );
-      })}
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 };
